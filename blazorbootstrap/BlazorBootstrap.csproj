@@ -2,6 +2,7 @@
 
   <PropertyGroup>
 
+    <TargetFrameworks>net9.0</TargetFrameworks>
     <PackageId>Blazor.Bootstrap</PackageId>
     <Version>3.0.0</Version>
     <PackageVersion>3.0.0</PackageVersion>
@@ -16,7 +17,6 @@
     <!--<Company>your_company</Company>-->
     <Copyright>Copyright © 2024 Blazor Bootstrap</Copyright>
 
-    <TargetFrameworks>net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
@@ -44,8 +44,8 @@
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+    </ItemGroup>
 
 </Project>
