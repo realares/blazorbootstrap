@@ -43,15 +43,15 @@ public class GridDataProviderRequest<TItem>
                 if (index == 1)
                 {
                     orderedData = sortItem.SortDirection == SortDirection.Ascending
-                                      ? resultData.OrderBy(sortItem.SortKeySelector.Compile())
-                                      : resultData.OrderByDescending(sortItem.SortKeySelector.Compile());
+                                    ? resultData.OrderBy(sortItem.SortKeySelector.Compile())
+                                    : resultData.OrderByDescending(sortItem.SortKeySelector.Compile());
                 }
                 else
                 {
                     if (orderedData != null)
                         orderedData = sortItem.SortDirection == SortDirection.Ascending
-                                          ? orderedData.ThenBy(sortItem.SortKeySelector.Compile())
-                                          : orderedData.ThenByDescending(sortItem.SortKeySelector.Compile());
+                                        ? orderedData.ThenBy(sortItem.SortKeySelector.Compile())
+                                        : orderedData.ThenByDescending(sortItem.SortKeySelector.Compile());
                 }
 
                 index++;
@@ -61,18 +61,20 @@ public class GridDataProviderRequest<TItem>
         }
 
         // apply paging
-        var skip = 0;
-        var take = data.Count();
         var totalCount = resultData!.Count(); // before paging
-
-        if (PageNumber > 0 && PageSize > 0)
+        int? newPageNumber = null;
+        if (PageNumber > 0 && PageSize > 0 && totalCount > 0)
         {
-            skip = (PageNumber - 1) * PageSize;
-            take = PageSize;
-            resultData = resultData!.Skip(skip).Take(take);
+            int skip = (PageNumber - 1) * PageSize;
+            if (totalCount <= skip)
+            {
+                newPageNumber = (totalCount / PageSize) + (totalCount % PageSize  == 0 ? 0 : 1);
+                skip = (newPageNumber.Value - 1) * PageSize;
+            }
+            resultData = resultData!.Skip(skip).Take(PageSize);
         }
 
-        return new GridDataProviderResult<TItem> { Data = resultData, TotalCount = totalCount };
+        return new GridDataProviderResult<TItem> { Data = resultData, TotalCount = totalCount, PageNumber = newPageNumber };
     }
 
     #endregion

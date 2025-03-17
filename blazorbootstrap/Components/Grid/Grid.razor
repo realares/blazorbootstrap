@@ -2,7 +2,7 @@
 @inherits BlazorBootstrapComponentBase
 @typeparam TItem
 
-<CascadingValue Value="@(this)" IsFixed="true">
+<CascadingValue Value="@(this)" Name="Parent" IsFixed="true">
     @ChildContent
 </CascadingValue>
 
@@ -22,6 +22,10 @@
                     }
                     @foreach (var column in columns)
                     {
+                        @if (!column.IsVisible)
+                        {
+                            continue;
+                        }
                         @column.HeaderTemplate
                     }
                 </tr>
@@ -38,6 +42,10 @@
                         }
                         @foreach (var column in columns)
                         {
+                            @if (!column.IsVisible)
+                            {
+                                continue;
+                            }
                             var columnClassList = new HashSet<string>();
                             var columnStyleList = new List<string>();
 
@@ -58,7 +66,8 @@
                             <th class="@string.Join(" ", columnClassList)" style="@string.Join(";", columnStyleList)">
                                 @if (column.Filterable)
                                 {
-                                    <GridColumnFilter FilterButtonColor="@column.FilterButtonColor"
+                                    <GridColumnFilter EnumFilterSelectText="@EnumFilterSelectText"
+                                                      FilterButtonColor="@column.FilterButtonColor"
                                                       FilterButtonCSSClass="@column.FilterButtonCSSClass"
                                                       FilterOperator="@column.FilterOperator"
                                                       FilterValue="@column.FilterValue"
@@ -68,7 +77,7 @@
                                                       GridColumnFilterChanged="async args => await column.OnFilterChangedAsync(args, column)"
                                                       PropertyType="@column.GetPropertyType()"
                                                       PropertyTypeName="@column.GetPropertyTypeName()"
-                                                      Unit="@Unit" />
+                                                      Unit="@column.FilterTextboxWidthUnit" />
                                 }
                             </th>
                         }
@@ -77,7 +86,7 @@
             </thead>
             <tbody>
                 @{
-                    var columnCount = columns.Count;
+                    var columnCount = columns.Where(c => c.IsVisible).Count();
                     if (AllowSelection) columnCount += 1;
                     if (AllowDetailView) columnCount += 1;
                 }
@@ -157,6 +166,10 @@
 
                                 @foreach (var column in columns)
                                 {
+                                    @if (!column.IsVisible)
+                                    {
+                                        continue;
+                                    }
                                     @column.CellTemplate(item)
                                 }
                             </tr>
