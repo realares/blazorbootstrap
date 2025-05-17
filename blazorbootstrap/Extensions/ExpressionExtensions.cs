@@ -659,7 +659,15 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringContainsExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        var parts = filterItem.PropertyName.Split('.');
+        Expression? currentExpression = parameterExpression;
+
+        foreach (var part in parts)
+            currentExpression = Expression.Property(currentExpression, part);
+
+        var propertyExp = currentExpression as MemberExpression;
+
+        //var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
