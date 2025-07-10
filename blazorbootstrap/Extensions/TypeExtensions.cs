@@ -1,4 +1,7 @@
 ﻿namespace BlazorBootstrap;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+
 
 /// <summary>
 /// Various extension methods for <see cref="Type" />.
@@ -74,6 +77,19 @@ public static class TypeExtensions
             currentType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
         }
         return currentType;
-        #endregion
     }
+
+    public static string? GetDisplayName(this Type type, string? name)
+    {
+        if (name != null)
+        {
+            var attr = type!.GetMember(name).FirstOrDefault()?.GetCustomAttribute<DisplayAttribute>();
+            name = attr?.Name ?? name;
+        }
+
+        return name;
+    }
+
+    #endregion
+
 }

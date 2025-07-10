@@ -123,6 +123,42 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
               .Where(column => column.Filterable && column.GetFilterOperator() != FilterOperator.None && !string.IsNullOrWhiteSpace(column.GetFilterValue()))
               ?.Select(column => new FilterItem(column.PropertyName, column.GetFilterValue(), column.GetFilterOperator(), column.StringComparison));
 
+    private string GetColumnSummaryValue(GridSummaryColumnType type, string propertyName, string format, string prefix)
+    {
+        double value = 0;
+
+        if (type == GridSummaryColumnType.Average)
+        {
+            prefix ??= "Avg: ";
+            value = items?.Average(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+        }
+        else if (type == GridSummaryColumnType.Count)
+        {
+            prefix ??= "Count: ";
+            value = items?.Where(x => x.GetType().GetProperty(propertyName)?.GetValue(x) is not null).Count() ?? 0;
+        }
+        else if (type == GridSummaryColumnType.Max)
+        {
+            prefix ??= "Max: ";
+            value = items?.Max(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+        }
+        else if (type == GridSummaryColumnType.Min)
+        {
+            prefix ??= "Min: ";
+            value = items?.Min(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+        }
+        else if (type == GridSummaryColumnType.Sum)
+        {
+            prefix ??= "Total: ";
+            value = items?.Sum(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+        }
+
+        if (string.IsNullOrWhiteSpace(format))
+            return $"{prefix}{value}";
+        else
+            return $"{prefix}{value.ToString(format, GetCultureInfo())}";
+    }
+
     /// <summary>
     /// Refresh the grid data.
     /// </summary>
@@ -315,6 +351,21 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
             builder.CloseElement(); // close: div
             builder.CloseElement(); // close: th
         };
+
+    private CultureInfo GetCultureInfo()
+    {
+        if (string.IsNullOrWhiteSpace(Locale))
+            return CultureInfo.CurrentCulture;
+
+        try
+        {
+            return CultureInfo.GetCultureInfo(Locale);
+        }
+        catch (CultureNotFoundException)
+        {
+            return CultureInfo.InvariantCulture;
+        }
+    }
 
     private IEnumerable<SortingItem<TItem>>? GetDefaultSorting() =>
         !AllowSorting || columns == null || !columns.Any()
@@ -656,6 +707,15 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
     public bool AllowSorting { get; set; }
 
     /// <summary>
+    /// Gets or sets the grid summary.
+    /// <para>
+    /// Default value is <see langword="false"/>.
+    /// </para>
+    /// </summary>
+    [Parameter]
+    public bool AllowSummary { get; set; }
+
+    /// <summary>
     /// Automatically hides the paging controls when the grid item count is less than or equal to the <see cref="PageSize" />
     /// and this property is set to `true`.
     /// </summary>
@@ -772,7 +832,8 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
     private string? GridContainerStyleNames =>
         BuildStyleNames(
             GridContainerStyle,
-            ($"height:{Height.ToString(CultureInfo.InvariantCulture)}{Unit.ToCssString()}", FixedHeader)
+            ($"height:{Height.ToString(CultureInfo.InvariantCulture)}{Unit.ToCssString()}", FixedHeader),
+            ($"overflow-x:auto;", Responsive)
         );
 
     /// <summary>
@@ -849,6 +910,15 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
     [Parameter]
     //[EditorRequired] 
     public string ItemsPerPageText { get; set; } = "Items per page"!;
+
+    /// <summary>
+    /// Gets or sets the locale.
+    /// <para>
+    /// Default value is <see langword="null"/>.
+    /// </para>
+    /// </summary>
+    [Parameter]
+    public string? Locale { get; set; }
 
     /// <summary>
     /// This event is triggered when the user clicks on the row.
@@ -929,6 +999,18 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
     [Parameter]
     public Func<TItem, string>? RowClass { get; set; }
 
+    /// <summary>
+    /// Gets or sets the function used to extract a unique key from a row item.
+    /// </summary>
+    /// <remarks>
+    /// The key returned by the function is used to uniquely identify each row in the data set.  This
+    /// is typically required for operations such as tracking changes or rendering rows efficiently. 
+    /// If not set, the item hash code will be used as the key.
+    /// Example usage: `RowKeySelector="(employee) => employee.Id"`.
+    /// </remarks>
+    [Parameter]
+    public Func<TItem, object>? RowKeySelector { get; set; }
+    
     /// <summary>
     /// Gets or sets the selected items.
     /// </summary>
