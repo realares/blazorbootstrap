@@ -42,7 +42,10 @@ public partial class GridColumn<TItem> : BlazorBootstrapComponentBase
 
     protected override void OnParametersSet() => SetDefaultFilter();
 
-    internal bool CanSort() => Parent is not null && Parent.AllowSorting && Sortable && SortKeySelector is not null;
+    internal bool CanSort() => Parent is not null 
+        && Parent.AllowSorting 
+        && Sortable 
+        && SortKeySelector is not null;
 
     internal FilterOperator GetFilterOperator() => filterOperator;
 
@@ -110,6 +113,10 @@ public partial class GridColumn<TItem> : BlazorBootstrapComponentBase
         {
             if (filterOperator == FilterOperator.None)
                 FilterOperator = filterOperator = FilterOperator.Equals;
+        }
+        else
+        {
+
         }
         if (isVisible != IsVisible)
         {
