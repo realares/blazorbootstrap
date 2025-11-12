@@ -2,5 +2,6 @@
 @inherits BlazorBootstrapComponentBase
 
 <div @ref="@Element" id="@Id" class="@ClassNames" style="@StyleNames" @attributes="@AdditionalAttributes">
+  @if (html is not null)
     @((MarkupString)html)
 </div>

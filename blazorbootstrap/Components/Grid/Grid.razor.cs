@@ -130,27 +130,27 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
         if (type == GridSummaryColumnType.Average)
         {
             prefix ??= "Avg: ";
-            value = items?.Average(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+            value = items?.Average(x => Convert.ToDouble(x?.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
         }
         else if (type == GridSummaryColumnType.Count)
         {
             prefix ??= "Count: ";
-            value = items?.Where(x => x.GetType().GetProperty(propertyName)?.GetValue(x) is not null).Count() ?? 0;
+            value = items?.Where(x => x?.GetType().GetProperty(propertyName)?.GetValue(x) is not null).Count() ?? 0;
         }
         else if (type == GridSummaryColumnType.Max)
         {
             prefix ??= "Max: ";
-            value = items?.Max(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+            value = items?.Max(x => Convert.ToDouble(x?.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
         }
         else if (type == GridSummaryColumnType.Min)
         {
             prefix ??= "Min: ";
-            value = items?.Min(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+            value = items?.Min(x => Convert.ToDouble(x?.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
         }
         else if (type == GridSummaryColumnType.Sum)
         {
             prefix ??= "Total: ";
-            value = items?.Sum(x => Convert.ToDouble(x.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
+            value = items?.Sum(x => Convert.ToDouble(x?.GetType().GetProperty(propertyName)?.GetValue(x))) ?? 0;
         }
 
         if (string.IsNullOrWhiteSpace(format))

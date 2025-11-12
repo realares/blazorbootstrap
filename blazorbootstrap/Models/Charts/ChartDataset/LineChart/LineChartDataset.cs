@@ -43,7 +43,7 @@ public class LineChartDataset : ChartDataset<double?>
 
         if (relativeIndex)
         {
-            var myIndex = relativeIndex ? chartData.Datasets.IndexOf(this) : 0;
+            var myIndex = relativeIndex ? chartData?.Datasets?.IndexOf(this) : 0;
 
             if (myIndex < 0)
                 throw new ArgumentException("The dataset is not in the chart data.");
@@ -51,7 +51,7 @@ public class LineChartDataset : ChartDataset<double?>
             if (myIndex == index)
                 throw new ArgumentException("The dataset is the same as this dataset.");
 
-            Fill = (index - myIndex).ToString("+0;-0", CultureInfo.InvariantCulture);
+            Fill = (index - myIndex)?.ToString("+0;-0", CultureInfo.InvariantCulture) ?? "";
         }
         else
         {

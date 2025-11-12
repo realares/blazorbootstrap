@@ -96,7 +96,9 @@ public partial class ProgressBar
     /// Default value is <see cref="ProgressColor.None" />.
     /// </remarks>
     [Parameter]
+#pragma warning disable BL0007 // Component parameters should be auto properties
     public ProgressColor Color
+#pragma warning restore BL0007 // Component parameters should be auto properties
     {
         get => color;
         set
@@ -122,7 +124,9 @@ public partial class ProgressBar
     /// Default value is <see cref="ProgressType.Default" />.
     /// </remarks>
     [Parameter]
+#pragma warning disable BL0007 // Component parameters should be auto properties
     public ProgressType Type
+#pragma warning restore BL0007 // Component parameters should be auto properties
     {
         get => type;
         set
@@ -139,7 +143,9 @@ public partial class ProgressBar
     /// Default value is 0.
     /// </remarks>
     [Parameter]
+#pragma warning disable BL0007 // Component parameters should be auto properties
     public double Width
+#pragma warning restore BL0007 // Component parameters should be auto properties
     {
         get => width;
         set
