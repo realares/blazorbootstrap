@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-
-    <TargetFrameworks>net9.0</TargetFrameworks>
     <PackageId>Blazor.Bootstrap</PackageId>
     <Version>3.4.0</Version>
     <PackageVersion>3.4.0</PackageVersion>
@@ -17,7 +15,7 @@
     <!--<Company>your_company</Company>-->
     <Copyright>Copyright © 2024 Blazor Bootstrap</Copyright>
 
-    <TargetFrameworks>net9.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
 
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -48,7 +46,7 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
     </ItemGroup>
 
 
