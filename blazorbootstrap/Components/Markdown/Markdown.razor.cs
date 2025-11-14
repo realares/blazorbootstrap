@@ -589,6 +589,7 @@ public partial class Markdown : BlazorBootstrapComponentBase
             var builder = new RenderTreeBuilder();
             ChildContent.Invoke(builder);
 
+#pragma warning disable BL0006 // Do not use RenderTree types
             var frames = builder.GetFrames().Array;
 
             foreach (var frame in frames)
@@ -599,6 +600,8 @@ public partial class Markdown : BlazorBootstrapComponentBase
                     if (lines.Any())
                         inputs.AddRange(lines);
                 }
+#pragma warning restore BL0006 // Do not use RenderTree types
+
         }
 
         if (inputs.Any())
