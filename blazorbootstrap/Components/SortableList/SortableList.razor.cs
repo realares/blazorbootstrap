@@ -11,7 +11,7 @@ public partial class SortableList<TItem> : BlazorBootstrapComponentBase
     /// <summary>
     /// A cancellation token source for managing asynchronous operations.
     /// </summary>
-    private CancellationTokenSource cancellationTokenSource = default!;
+    //private CancellationTokenSource cancellationTokenSource = default!;
 
     /// <summary>
     /// A CSS selector used to filter disabled items.

@@ -8,6 +8,7 @@ public sealed record class FilterItem
         Value = value;
         Operator = @operator;
         StringComparison = stringComparison;
+        PropertType = null;
     }
 
     FilterItem(Type propertType, string propertyName, string value, FilterOperator @operator, StringComparison stringComparison)
@@ -19,7 +20,7 @@ public sealed record class FilterItem
         StringComparison = stringComparison;
     }
 
-    public Type PropertType { get; private set; }
+    public Type? PropertType { get; private set; }
     public string PropertyName { get; private set; }
     public string Value { get; private set; }
     public FilterOperator Operator { get; private set; }

@@ -450,6 +450,7 @@ public static class EnumExtensions
             SortableListPullMode.True => true,
             SortableListPullMode.False => false,
             SortableListPullMode.Clone => "clone",
+            _ => throw new NotImplementedException(),
             //SortableListPullMode.Array => "array"
         };
 
@@ -458,6 +459,7 @@ public static class EnumExtensions
         {
             SortableListPutMode.True => true,
             SortableListPutMode.False => false,
+            _ => throw new NotImplementedException(),
             //SortableListPullMode.Array => "array"
         };
 

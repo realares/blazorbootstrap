@@ -310,7 +310,7 @@ public static class ExpressionExtensions
 
         if (propertyType is not null && propertyType.IsEnum)
         {
-            _ = Enum.TryParse(propertyType, filterItem.Value, out object filterValue);
+            _ = Enum.TryParse(propertyType, filterItem.Value, out object? filterValue);
             value = Expression.Constant(filterValue);
         }
 
@@ -667,12 +667,11 @@ public static class ExpressionExtensions
 
         var propertyExp = currentExpression as MemberExpression;
 
-        //var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExp!, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Contains method
         var methodInfo = typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) });
