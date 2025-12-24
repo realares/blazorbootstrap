@@ -554,6 +554,9 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
 
     private async Task RowClick(TItem item, EventArgs args)
     {
+        if (AllowDetailView && args is Microsoft.AspNetCore.Components.Web.MouseEventArgs ma && ma.OffsetX < 18)
+            return;
+
         if (AllowRowClick && OnRowClick.HasDelegate)
             await OnRowClick.InvokeAsync(new GridRowEventArgs<TItem>(item));
     }
