@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	<ParentPackagesProps>$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))</ParentPackagesProps>
+  </PropertyGroup>
+	
+	<Import Project="$(ParentPackagesProps)" Condition="'$(ParentPackagesProps)' != ''" />
+	
+  <ItemGroup>
+	  <PackageVersion Include="Microsoft.AspNetCore.Components" Version="10.0.1" Condition="'$(ParentPackagesProps)' == ''"/>
+	  <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.1" Condition="'$(ParentPackagesProps)' == ''"/>
+  </ItemGroup>
+</Project>
