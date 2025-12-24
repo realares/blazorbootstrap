@@ -7,7 +7,7 @@ public class ModalService
     /// <summary>
     /// Event that is raised when the modal is shown.
     /// </summary>
-    internal event Func<ModalOption, Task> OnShow = default!;
+    public event Func<ModalOption, Task> OnShow = default!;
 
     #endregion
 
@@ -52,7 +52,7 @@ public class ModalService
     /// <summary>
     /// Called when the modal is closed.
     /// </summary>
-    internal void OnClose()
+    public void OnClose()
     {
         OnHide?.Invoke();
         OnHide = null!;
