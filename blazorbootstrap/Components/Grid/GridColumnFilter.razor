@@ -48,6 +48,10 @@
     {
         <input class="form-control" style="@filterStyle" type="datetime-local" value="@filterValue" @oninput="@(async args => await OnFilterValueChangedAsync(args))" />
     }
+    else if (PropertyTypeName == StringConstants.PropertyTypeNameDateTimeOffset)
+    {
+        <input class="form-control" style="@filterStyle" type="datetime-local" value="@filterValue" @oninput="@(async args => await OnFilterValueChangedAsync(args))" />
+    }
     else if (PropertyTypeName == StringConstants.PropertyTypeNameBoolean)
     {
         <input class="form-check-input" type="checkbox" value="@filterValue" @onchange="@(async args => await OnFilterValueChangedAsync(args))" />

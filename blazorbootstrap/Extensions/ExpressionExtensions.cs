@@ -68,13 +68,22 @@ public static class ExpressionExtensions
             _ = DateTime.TryParse(filterItem.Value, out var filterValue);
             constantExpression = Expression.Constant(filterValue);
         }
+        else if (propertyTypeName == StringConstants.PropertyTypeNameDateTimeOffset)
+        {
+            _ = DateTime.TryParse(filterItem.Value, out var filterValue);
+            constantExpression = Expression.Constant(filterValue);
+        }
 
         return constantExpression!;
     }
 
     public static Expression<Func<TItem, bool>> GetDateEqualExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem, string propertyTypeName)
     {
-        var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        //var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var dateConstantExpression = GetDateConstantExpression(filterItem, propertyTypeName);
 
         Expression nonNullComparisonExpression;
@@ -101,6 +110,13 @@ public static class ExpressionExtensions
             var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
             nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
         }
+        else if (propertyExpression.Type == typeof(DateTimeOffset?))
+        {
+            var nullableValueExpression = Expression.Property(propertyExpression, "Value");
+            nonNullComparisonExpression = Expression.Equal(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTimeOffset)));
+            var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
+            nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
+        }
         else
         {
             // Property type is not supported
@@ -112,7 +128,9 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetDateGreaterThanExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem, string propertyTypeName)
     {
-        var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
         var dateConstantExpression = GetDateConstantExpression(filterItem, propertyTypeName);
 
         Expression nonNullComparisonExpression;
@@ -139,6 +157,13 @@ public static class ExpressionExtensions
             var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
             nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
         }
+        else if (propertyExpression.Type == typeof(DateTimeOffset?))
+        {
+            var nullableValueExpression = Expression.Property(propertyExpression, "Value");
+            nonNullComparisonExpression = Expression.GreaterThan(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTimeOffset)));
+            var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
+            nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
+        }
         else
         {
             // Property type is not supported
@@ -150,7 +175,9 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetDateGreaterThanOrEqualExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem, string propertyTypeName)
     {
-        var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
         var dateConstantExpression = GetDateConstantExpression(filterItem, propertyTypeName);
 
         Expression nonNullComparisonExpression;
@@ -177,6 +204,13 @@ public static class ExpressionExtensions
             var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
             nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
         }
+        else if (propertyExpression.Type == typeof(DateTimeOffset?))
+        {
+            var nullableValueExpression = Expression.Property(propertyExpression, "Value");
+            nonNullComparisonExpression = Expression.GreaterThanOrEqual(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTimeOffset)));
+            var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
+            nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
+        }
         else
         {
             // Property type is not supported
@@ -188,7 +222,10 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetDateLessThanExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem, string propertyTypeName)
     {
-        var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var dateConstantExpression = GetDateConstantExpression(filterItem, propertyTypeName);
 
         Expression nonNullComparisonExpression;
@@ -215,6 +252,13 @@ public static class ExpressionExtensions
             var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
             nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
         }
+        else if (propertyExpression.Type == typeof(DateTimeOffset?))
+        {
+            var nullableValueExpression = Expression.Property(propertyExpression, "Value");
+            nonNullComparisonExpression = Expression.LessThan(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTimeOffset)));
+            var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
+            nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
+        }
         else
         {
             // Property type is not supported
@@ -226,7 +270,9 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetDateLessThanOrEqualExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem, string propertyTypeName)
     {
-        var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
         var dateConstantExpression = GetDateConstantExpression(filterItem, propertyTypeName);
 
         Expression nonNullComparisonExpression;
@@ -253,6 +299,13 @@ public static class ExpressionExtensions
             var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
             nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
         }
+        else if (propertyExpression.Type == typeof(DateTimeOffset?))
+        {
+            var nullableValueExpression = Expression.Property(propertyExpression, "Value");
+            nonNullComparisonExpression = Expression.LessThanOrEqual(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTimeOffset)));
+            var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
+            nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
+        }
         else
         {
             // Property type is not supported
@@ -264,7 +317,9 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetDateNotEqualExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem, string propertyTypeName)
     {
-        var propertyExpression = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
         var dateConstantExpression = GetDateConstantExpression(filterItem, propertyTypeName);
 
         Expression nonNullComparisonExpression;
@@ -288,6 +343,13 @@ public static class ExpressionExtensions
         {
             var nullableValueExpression = Expression.Property(propertyExpression, "Value");
             nonNullComparisonExpression = Expression.NotEqual(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTime)));
+            var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
+            nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
+        }
+        else if (propertyExpression.Type == typeof(DateTimeOffset?))
+        {
+            var nullableValueExpression = Expression.Property(propertyExpression, "Value");
+            nonNullComparisonExpression = Expression.NotEqual(nullableValueExpression, Expression.Convert(dateConstantExpression, typeof(DateTimeOffset)));
             var nullCheckExpression = Expression.Property(propertyExpression, "HasValue");
             nonNullComparisonExpression = Expression.Condition(nullCheckExpression, nonNullComparisonExpression, Expression.Constant(false));
         }
@@ -401,7 +463,8 @@ public static class ExpressionExtensions
             };
 
         if (propertyTypeName is StringConstants.PropertyTypeNameDateOnly
-                                or StringConstants.PropertyTypeNameDateTime)
+                                or StringConstants.PropertyTypeNameDateTime
+                                 or StringConstants.PropertyTypeNameDateTimeOffset)
             return filterItem.Operator switch
             {
                 FilterOperator.Equals => GetDateEqualExpressionDelegate<TItem>(parameterExpression, filterItem, propertyTypeName),
@@ -659,16 +722,20 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringContainsExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
+        //var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExpression, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Contains method
         var methodInfo = typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) });
-        var containsExpression = Expression.Call(propertyExp, methodInfo!, someValue, comparisonExpression);
+        var containsExpression = Expression.Call(propertyExpression, methodInfo!, someValue, comparisonExpression);
 
         // Combine null check and contains expression using AndAlso
         var finalExpression = Expression.AndAlso(nullCheckExpression, containsExpression);
@@ -678,16 +745,19 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringDoesNotContainExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExpression, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Contains method
         var methodInfo = typeof(string).GetMethod(nameof(string.Contains), new[] { typeof(string), typeof(StringComparison) });
-        var containsExpression = Expression.Call(propertyExp, methodInfo!, someValue, comparisonExpression);
+        var containsExpression = Expression.Call(propertyExpression, methodInfo!, someValue, comparisonExpression);
         
         // "not contains" expression
         var notContainsExpression = Expression.Not(containsExpression);
@@ -700,16 +770,19 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringEndsWithExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExpression, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Equals method
         var methodInfo = typeof(string).GetMethod(nameof(string.EndsWith), new[] { typeof(string), typeof(StringComparison) });
-        var equalsExpression = Expression.Call(propertyExp, methodInfo!, someValue, comparisonExpression);
+        var equalsExpression = Expression.Call(propertyExpression, methodInfo!, someValue, comparisonExpression);
 
         // Combine null check and equals expression using AndAlso
         var finalExpression = Expression.AndAlso(nullCheckExpression, equalsExpression);
@@ -719,16 +792,19 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringEqualsExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExpression, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Equals method
         var methodInfo = typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) });
-        var equalsExpression = Expression.Call(propertyExp, methodInfo!, someValue, comparisonExpression);
+        var equalsExpression = Expression.Call(propertyExpression, methodInfo!, someValue, comparisonExpression);
 
         // Combine null check and equals expression using AndAlso
         var finalExpression = Expression.AndAlso(nullCheckExpression, equalsExpression);
@@ -738,16 +814,19 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringNotEqualsExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExpression, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Equals method
         var methodInfo = typeof(string).GetMethod(nameof(string.Equals), new[] { typeof(string), typeof(StringComparison) });
-        var equalsExpression = Expression.Call(propertyExp, methodInfo!, someValue, comparisonExpression);
+        var equalsExpression = Expression.Call(propertyExpression, methodInfo!, someValue, comparisonExpression);
         var notEqualsExpresion = Expression.Equal(equalsExpression, Expression.Constant(false, typeof(bool)));
 
         // Combine null check and equals expression using AndAlso
@@ -758,16 +837,19 @@ public static class ExpressionExtensions
 
     public static Expression<Func<TItem, bool>> GetStringStartsWithExpressionDelegate<TItem>(ParameterExpression parameterExpression, FilterItem filterItem)
     {
-        var propertyExp = Expression.Property(parameterExpression, filterItem.PropertyName);
+        MemberExpression? propertyExpression = GetPropertyExpression(parameterExpression, filterItem);
+        if (propertyExpression == null)
+            throw new ArgumentException($"Property '{filterItem.PropertyName}' not found on type '{typeof(TItem)}'.");
+
         var someValue = Expression.Constant(filterItem.Value, typeof(string));
         var comparisonExpression = Expression.Constant(filterItem.StringComparison);
 
         // Handle null check
-        var nullCheckExpression = Expression.NotEqual(propertyExp, Expression.Constant(null, typeof(string)));
+        var nullCheckExpression = Expression.NotEqual(propertyExpression, Expression.Constant(null, typeof(string)));
 
         // Create method call expression for Equals method
         var methodInfo = typeof(string).GetMethod(nameof(string.StartsWith), new[] { typeof(string), typeof(StringComparison) });
-        var equalsExpression = Expression.Call(propertyExp, methodInfo!, someValue, comparisonExpression);
+        var equalsExpression = Expression.Call(propertyExpression, methodInfo!, someValue, comparisonExpression);
 
         // Combine null check and equals expression using AndAlso
         var finalExpression = Expression.AndAlso(nullCheckExpression, equalsExpression);
@@ -791,7 +873,22 @@ public static class ExpressionExtensions
         return Expression.Lambda<Func<TItem, bool>>(body, parameterExpression);
     }
 
+    private static MemberExpression? GetPropertyExpression(ParameterExpression parameterExpression, FilterItem filterItem)
+    {
+        var parts = filterItem.PropertyName.Split('.');
+        Expression? currentExpression = parameterExpression;
+
+        foreach (var part in parts)
+            currentExpression = Expression.Property(currentExpression, part);
+
+        var propertyExp = currentExpression as MemberExpression;
+        return propertyExp;
+    }
+
+
     #endregion
+
+
 }
 
 internal class SubstExpressionVisitor : ExpressionVisitor

@@ -91,7 +91,8 @@ public partial class GridColumn<TItem> : BlazorBootstrapComponentBase
                 FilterOperator = filterOperator = FilterOperator.Contains;
         }
         else if (propertyTypeName is StringConstants.PropertyTypeNameDateOnly
-                                     or StringConstants.PropertyTypeNameDateTime)
+                                     or StringConstants.PropertyTypeNameDateTime
+                                     or StringConstants.PropertyTypeNameDateTimeOffset)
         {
             if (filterOperator == FilterOperator.None)
                 FilterOperator = filterOperator = FilterOperator.Equals;

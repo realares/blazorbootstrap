@@ -19,6 +19,7 @@ public static class TypeExtensions
             { typeof(decimal), StringConstants.PropertyTypeNameDecimal },
             { typeof(double), StringConstants.PropertyTypeNameDouble },
             { typeof(DateTime), StringConstants.PropertyTypeNameDateTime },
+            { typeof(DateTimeOffset), StringConstants.PropertyTypeNameDateTimeOffset},
             { typeof(bool), StringConstants.PropertyTypeNameBoolean },
             { typeof(Guid), StringConstants.PropertyTypeNameGuid },
 #if NET6_0_OR_GREATER

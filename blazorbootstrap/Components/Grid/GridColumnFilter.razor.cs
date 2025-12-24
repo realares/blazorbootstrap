@@ -50,7 +50,8 @@ public partial class GridColumnFilter : BlazorBootstrapComponentBase
                 filterOperator = FilterOperator.Contains;
         }
         else if (PropertyTypeName is StringConstants.PropertyTypeNameDateOnly
-                                     or StringConstants.PropertyTypeNameDateTime)
+                                     or StringConstants.PropertyTypeNameDateTime
+                                     or StringConstants.PropertyTypeNameDateTimeOffset)
         {
             if (filterOperator is FilterOperator.None or FilterOperator.Clear)
                 filterOperator = FilterOperator.Equals;
@@ -136,7 +137,9 @@ public partial class GridColumnFilter : BlazorBootstrapComponentBase
                                      or StringConstants.PropertyTypeNameChar)
             selectedFilterSymbol = filterOperators?.FirstOrDefault(x => x.FilterOperator == filterOperator)?.Symbol;
         else if (PropertyTypeName is StringConstants.PropertyTypeNameDateOnly
-                                     or StringConstants.PropertyTypeNameDateTime)
+                                     or StringConstants.PropertyTypeNameDateTime
+                                     or StringConstants.PropertyTypeNameDateTimeOffset)
+
             selectedFilterSymbol = filterOperators?.FirstOrDefault(x => x.FilterOperator == filterOperator)?.Symbol;
         else if (PropertyTypeName == StringConstants.PropertyTypeNameBoolean) selectedFilterSymbol = filterOperators?.FirstOrDefault(x => x.FilterOperator == filterOperator)?.Symbol;
         else if (PropertyTypeName == StringConstants.PropertyTypeNameEnum) selectedFilterSymbol = filterOperators?.FirstOrDefault(x => x.FilterOperator == filterOperator)?.Symbol;

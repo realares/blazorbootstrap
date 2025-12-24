@@ -75,7 +75,8 @@ public static class FilterOperatorUtility
             return GetStringFilterOperators();
 
         if (propertyTypeName is StringConstants.PropertyTypeNameDateOnly
-                                or StringConstants.PropertyTypeNameDateTime)
+                                or StringConstants.PropertyTypeNameDateTime
+                                or StringConstants.PropertyTypeNameDateTimeOffset)
             return GetDateFilterOperators();
 
         if (propertyTypeName == StringConstants.PropertyTypeNameBoolean) return GetBooleanFilterOperators();

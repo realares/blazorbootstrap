@@ -195,12 +195,18 @@ public partial class Grid<TItem> : BlazorBootstrapComponentBase
         }
 
         cancellationTokenSource = new CancellationTokenSource();
+        try
+        {
+            var token = cancellationTokenSource.Token;
+            await Task.Delay(300, token); // 300ms timeout for the debouncing
 
-        var token = cancellationTokenSource.Token;
-        await Task.Delay(300, token); // 300ms timeout for the debouncing
-
-        await SaveGridSettingsAsync();
-        await RefreshDataAsync(false, token);
+            await SaveGridSettingsAsync();
+    
+            await RefreshDataAsync(false, token);
+        }
+        catch (TaskCanceledException)
+        {
+        }
     }
 
     internal async Task RefreshDataAsync(bool firstRender = false, CancellationToken cancellationToken = default)
