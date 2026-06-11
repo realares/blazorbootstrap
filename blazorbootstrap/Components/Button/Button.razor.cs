@@ -125,14 +125,21 @@ public partial class Button : BlazorBootstrapComponentBase
 
             // additional scenario
             // NOTE: do not change the below sequence
-            if (Disabled)
+            try
             {
-                await JSRuntime.InvokeVoidAsync("window.blazorBootstrap.tooltip.dispose", Element);
+                if (Disabled)
+                {
+                    await JSRuntime.InvokeVoidAsync("window.blazorBootstrap.tooltip.dispose", Element);
+                }
+                else if (previousTooltipTitle != TooltipTitle || previousTooltipColor != TooltipColor)
+                {
+                    await JSRuntime.InvokeVoidAsync("window.blazorBootstrap.tooltip.dispose", Element);
+                    await JSRuntime.InvokeVoidAsync("window.blazorBootstrap.tooltip.update", Element);
+                }
             }
-            else if (previousTooltipTitle != TooltipTitle || previousTooltipColor != TooltipColor)
+            catch (Exception)
             {
-                await JSRuntime.InvokeVoidAsync("window.blazorBootstrap.tooltip.dispose", Element);
-                await JSRuntime.InvokeVoidAsync("window.blazorBootstrap.tooltip.update", Element);
+
             }
 
             previousTooltipTitle = TooltipTitle;
